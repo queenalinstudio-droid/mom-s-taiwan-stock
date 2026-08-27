@@ -1,0 +1,21 @@
+name: 收盤後更新類股資料
+on:
+  schedule:
+    - cron: "10 7 * * 1-5"   # 台灣時間 15:10 週一到週五
+  workflow_dispatch:
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install requests
+      - run: python scripts/daily.py
+      - run: python scripts/intraday.py
+      - name: 存回 GitHub
+        run: |
+          git config user.name bot && git config user.email bot@users.noreply.github.com
+          git add data && git commit -m "daily $(date +%F)" || echo "沒有變動"
+          git push

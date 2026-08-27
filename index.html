@@ -1,0 +1,125 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>媽媽的台股類股看板</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1519;--panel:#161e24;--line:#243038;--ink:#ece4d4;--dim:#8d9aa3;--up:#ff5a4e;--dn:#2fbf8f;--mine:#f2c14e;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;font-size:15px}
+header{padding:18px 16px 6px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}
+h1{margin:0;font-size:21px;font-weight:900;letter-spacing:.08em}
+.asof{font:12px var(--mono);color:var(--dim)}
+.mkt{padding:0 16px 10px;display:flex;gap:14px;align-items:baseline;font-family:var(--mono)}.mkt b{font-size:28px;font-weight:600}
+.tabs{display:flex;gap:6px;padding:0 12px 10px;flex-wrap:wrap}.tabs button{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer}
+.tabs button.on{background:var(--mine);color:#1a1408;border-color:var(--mine);font-weight:700}
+.legend{padding:0 16px 10px;font-size:12px;color:var(--dim);line-height:1.6}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:10px;padding:0 12px 24px}
+.sec{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px 6px}
+.sec h2{margin:0 0 6px;font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline}.sec h2 span{font:600 22px var(--mono)}
+.rot{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font:11px var(--mono);margin:4px 0 6px}
+.rot div{background:#0c1114;border-radius:4px;padding:4px 6px;text-align:center}.rot small{display:block;color:var(--dim);font-size:10px}
+.rot2{font:11px var(--mono);color:var(--dim);display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.row{display:grid;grid-template-columns:22px 1fr auto auto;gap:8px;align-items:baseline;padding:7px 0;border-top:1px solid var(--line)}
+.row.r1{padding:10px 0 8px}.row.r1 .nm{font-size:20px;font-weight:900}.row.r1 .px,.row.r1 .ch{font-size:19px}
+.row.r2 .nm{font-size:17px;font-weight:700}.row.r3 .nm{font-size:15px;color:#c9c0b0}
+.rk{font:12px var(--mono);color:var(--dim)}.nm small{font:11px var(--mono);color:var(--dim);margin-left:6px}
+.px,.ch{font-family:var(--mono);font-variant-numeric:tabular-nums}.up{color:var(--up)}.dn{color:var(--dn)}.fl{color:var(--dim)}
+.mine{cursor:pointer;background:linear-gradient(90deg,rgba(242,193,78,.14),transparent 40%);margin:0 -14px;padding-left:14px!important;padding-right:14px!important}
+.tag{display:inline-block;font-size:10px;font-weight:700;color:#1a1408;background:var(--mine);border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle}
+.mine-h{display:flex;justify-content:space-between;font-size:11px;color:var(--mine);letter-spacing:.08em;padding:9px 0 3px;border-top:2px solid rgba(242,193,78,.35);margin-top:4px}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:6px;padding:6px 0;border-top:1px solid var(--line);cursor:pointer}
+.mrow .nm{font-size:14px;font-weight:700}.mrow .meta{font:11px var(--mono);color:var(--dim);display:flex;gap:10px;flex-wrap:wrap;margin-top:2px}
+.mrow .ch{font:600 15px var(--mono);text-align:right}.mrow .rel{font:11px var(--mono);text-align:right;display:block}
+.pill{display:inline-block;border-radius:3px;padding:0 4px;background:#243038;color:var(--ink)}.pill.top{background:rgba(242,193,78,.25)}
+.det{display:none;margin:0 -14px 6px;padding:8px 14px 10px;background:#0c1114;border-top:1px dashed var(--line);font-family:var(--mono);font-size:12.5px}.det.open{display:block}
+.det table{width:100%;border-collapse:collapse}.det td,.det th{text-align:right;padding:3px 0;font-weight:400}.det th{color:var(--dim)}
+.det td:first-child,.det th:first-child{text-align:left}.det tr.sum td{border-top:1px solid var(--line);padding-top:5px;font-weight:600}
+.more{font-size:12px;color:var(--dim);cursor:pointer;padding:6px 0;text-align:center}
+.etf{margin:0 12px 30px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}.etf h2{margin:0 0 6px;font-size:15px}.etf p{margin:0 0 8px;font-size:12px;color:var(--dim)}
+.bar{display:grid;grid-template-columns:150px 1fr 64px;gap:10px;align-items:center;padding:5px 0;font-size:13px}.bar .t{height:10px;position:relative}.bar .t i{position:absolute;top:0;height:10px;border-radius:3px}
+.bar .v{font:13px var(--mono);text-align:right}.bar.bm{border-bottom:1px solid var(--line);margin-bottom:4px;padding-bottom:8px}
+.heat{margin:0 12px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;overflow-x:auto}
+.heat table{border-collapse:collapse;width:100%;font:12px var(--mono)}.heat th{color:var(--dim);font-weight:400;text-align:right;padding:4px 6px}.heat td{text-align:right;padding:4px 6px;border-top:1px solid var(--line)}
+.heat td:first-child,.heat th:first-child{text-align:left;font-family:"Noto Sans TC";font-weight:700}
+.cell{display:inline-block;min-width:52px;border-radius:3px;padding:1px 4px}
+.set{margin:0 12px 24px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px}.set input{width:100%;padding:8px;border-radius:6px;border:1px solid var(--line);background:#0c1114;color:var(--ink);font:12px var(--mono);margin:6px 0}
+.set button{background:var(--mine);border:0;border-radius:6px;padding:8px 14px;font-weight:700;cursor:pointer}.set p{margin:4px 0;color:var(--dim)}
+.msg{padding:10px 16px;font-size:13px;color:var(--dim)}
+.row:focus-visible,.mrow:focus-visible{outline:2px solid var(--mine);outline-offset:-2px}
+</style></head><body>
+<header><h1>媽媽的台股類股看板</h1><div class="asof" id="asof">載入中…</div></header>
+<div class="mkt"><span>加權指數</span><b id="mkt">—</b></div>
+<div class="tabs"><button class="on" data-v="board">類股</button><button data-v="rot">輪動</button><button data-v="etf">ETF</button><button data-v="set">設定</button></div>
+<div id="msg" class="msg"></div>
+<div id="v-board"><div class="legend"><i style="background:var(--up)"></i>漲　<i style="background:var(--dn)"></i>跌　<i style="background:var(--mine)"></i>媽媽持有，點一下看各批損益<br>每張卡：類股今日漲跌 → 相對大盤 1日/1週/1月/3月 → 前三大 → 媽媽在這類股的持股</div><div class="grid" id="grid"></div></div>
+<div id="v-rot" style="display:none"><div class="legend">數字都是「類股減大盤」，紅=比大盤強、綠=比大盤弱。看一列連續四格都綠，代表錢已經離開很久；今天紅但 1 月 3 月都綠，只是反彈。法人=三大法人買賣超（億）。成交比重=這類股今天佔全市場成交金額 % 對比 60 日平均。廣度=類股裡有幾 % 的股票站在 20 日線上。</div><div class="heat" id="heat"></div></div>
+<div id="v-etf" style="display:none"><section class="etf"><h2>ETF 對照</h2><p>今日漲跌 % 相對於 0050（中線）。只看一天不夠，要看幾週；長期落後大盤又不是刻意選的，可以考慮換。</p><div id="etf"></div></section></div>
+<div id="v-set" style="display:none"><div class="set"><b>持股資料來源（Google 試算表）</b><p>Google 試算表 → 檔案 → 共用 → 發布到網路 → 選「交易紀錄」工作表、格式選 CSV → 複製網址貼到這裡。網址只存在這支手機，不會上傳。</p><input id="csv" placeholder="https://docs.google.com/spreadsheets/d/e/…/pub?gid=…&single=true&output=csv"><button id="save">儲存並重新載入</button><p id="setmsg"></p></div></div>
+<script>
+const f=n=>n==null?"—":n.toFixed(2), s=n=>n==null?"—":(n>0?"+":"")+n.toFixed(2)+"%", cls=n=>n==null?"fl":n>0?"up":n<0?"dn":"fl", money=n=>Math.round(n).toLocaleString();
+const $=id=>document.getElementById(id);
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));["board","rot","etf","set"].forEach(v=>$("v-"+v).style.display=v===b.dataset.v?"":"none")});
+$("csv").value=localStorage.getItem("csvurl")||"";
+$("save").onclick=()=>{localStorage.setItem("csvurl",$("csv").value.trim());location.reload()};
+
+async function loadHoldings(){
+  const url=localStorage.getItem("csvurl"); if(!url){$("msg").textContent="還沒設定持股資料：到「設定」貼上 Google 試算表的 CSV 網址。";return {}}
+  try{
+    const txt=await (await fetch(url,{cache:"no-store"})).text();
+    const rows=txt.split(/\r?\n/).map(l=>l.split(",").map(x=>x.replace(/^"|"$/g,"").trim()));
+    const h=rows[0]; const ci=n=>h.findIndex(x=>x.startsWith(n));
+    const iC=ci("代號"),iT=ci("現股"),iQ=ci("股數"),iP=ci("成交價"),iF=ci("手續費");
+    const held={};
+    for(const r of rows.slice(1)){ if(!r[iC]||!Number(r[iQ]))continue;
+      held[r[iC]]=held[r[iC]]||[]; held[r[iC]].push({type:r[iT]||"現股",qty:Number(r[iQ].replace(/,/g,"")),avg:Number((r[iP]||"0").replace(/,/g,"")),fee:Number((r[iF]||"0").replace(/,/g,""))}) }
+    $("msg").textContent=""; return held;
+  }catch(e){$("msg").textContent="持股資料讀不到：確認試算表有「發布到網路」且格式是 CSV。";return {}}
+}
+function lotTable(lots,px){
+  let tq=0,tc=0;const rows=lots.map(l=>{const v=l.qty*px,c=l.qty*l.avg+l.fee,pl=v-c;tq+=l.qty;tc+=c;
+    return `<tr><td>${l.type}</td><td>${l.qty.toLocaleString()}</td><td>${f(l.avg)}</td><td>${money(v)}</td><td class="${cls(pl)}">${(pl>=0?"+":"")+money(pl)}</td><td class="${cls(pl)}">${c?s(pl/c*100):"—"}</td></tr>`}).join("");
+  const tv=tq*px,tpl=tv-tc;
+  return `<table><tr><th>批次</th><th>股數</th><th>均價</th><th>現值</th><th>損益</th><th>報酬</th></tr>${rows}<tr class="sum"><td>合計</td><td>${tq.toLocaleString()}</td><td>${tq?f(tc/tq):"—"}</td><td>${money(tv)}</td><td class="${cls(tpl)}">${(tpl>=0?"+":"")+money(tpl)}</td><td class="${cls(tpl)}">${tc?s(tpl/tc*100):"—"}</td></tr></table>`;
+}
+function attach(card,row,lots,px){const d=document.createElement("div");d.className="det";d.innerHTML=lotTable(lots,px);card.appendChild(d);
+  row.tabIndex=0;row.setAttribute("role","button");const t=()=>d.classList.toggle("open");row.onclick=t;row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();t()}}}
+
+(async()=>{
+  const [S,Q,held]=await Promise.all([fetch("data/sectors.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>null),fetch("data/quotes.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>({q:{}})),loadHoldings()]);
+  if(!S){$("asof").textContent="還沒有資料：到 GitHub 的 Actions 手動跑一次「收盤後更新類股資料」。";return}
+  const q=Q.q||{};const live=c=>q[c]; 
+  $("asof").textContent=`類股資料 ${S.asof}　報價 ${Q.asof||"—"}`;
+  const mk=live("_TAIEX")?live("_TAIEX").chg:S.market.chg1d;$("mkt").textContent=s(mk);$("mkt").className=cls(mk);
+  // ---- 類股卡 ----
+  const grid=$("grid");
+  const secs=S.sectors.map(sec=>{const tops=sec.top.map(t=>live(t.code)?live(t.code).chg:t.chg);return {...sec,liveChg:tops.length?tops.reduce((a,b)=>a+b,0)/tops.length:sec.chg1d}});
+  secs.sort((a,b)=>b.liveChg-a.liveChg).forEach(sec=>{
+    const card=document.createElement("div");card.className="sec";
+    const r=sec.rel;card.innerHTML=`<h2>${sec.name}<span class="${cls(sec.liveChg)}">${s(sec.liveChg)}</span></h2>
+      <div class="rot">${[["1日",r["1d"]],["1週",r["5d"]],["1月",r["20d"]],["3月",r["60d"]]].map(([k,v])=>`<div class="${cls(v)}">${s(v)}<small>${k} vs大盤</small></div>`).join("")}</div>
+      <div class="rot2"><span>法人5日 ${sec.flow5==null?"—":(sec.flow5>0?"+":"")+sec.flow5+"億"}</span><span>20日 ${sec.flow20==null?"—":(sec.flow20>0?"+":"")+sec.flow20+"億"}</span><span>成交比重 ${sec.turnover.today}% / 均${sec.turnover.avg60}%</span><span>廣度 ${sec.breadth==null?"—":sec.breadth+"%"}</span></div>`;
+    sec.top.forEach((st,i)=>{const lv=live(st.code)||st,lots=held[st.code];
+      const row=document.createElement("div");row.className=`row r${i+1}${lots?" mine":""}`;
+      row.innerHTML=`<span class="rk">${i+1}</span><span class="nm">${st.name}<small>${st.code}</small>${lots?'<span class="tag">持</span>':''}</span><span class="px">${f(lv.px)}</span><span class="ch ${cls(lv.chg)}">${s(lv.chg)}</span>`;
+      card.appendChild(row);if(lots)attach(card,row,lots,lv.px)});
+    const mine=sec.stocks.filter(st=>held[st.code]&&st.rank>3);
+    if(mine.length){const h=document.createElement("div");h.className="mine-h";h.innerHTML=`<span>媽媽在${sec.name}的持股 ${mine.length} 檔</span><span>共 ${sec.n} 家</span>`;card.appendChild(h);
+      const box=document.createElement("div");card.appendChild(box);
+      const render=(lim)=>{box.innerHTML="";mine.slice(0,lim).forEach(st=>{const lv=live(st.code)||st,rel=lv.chg-sec.liveChg;
+        const row=document.createElement("div");row.className="mrow";
+        row.innerHTML=`<div><div class="nm">${st.name}<small style="font:11px var(--mono);color:var(--dim);margin-left:6px">${st.code}</small></div><div class="meta"><span class="pill ${st.rank<=10?"top":""}">市值第 ${st.rank} 名</span><span>市值 ${st.cap} 億</span><span>佔類股 ${st.share}%</span></div></div><div><span class="ch ${cls(lv.chg)}">${s(lv.chg)}</span><span class="rel ${cls(rel)}">${rel>=0?"強於類股":"弱於類股"} ${s(rel)}</span></div>`;
+        box.appendChild(row);attach(box,row,held[st.code],lv.px)});
+        if(mine.length>lim){const m=document.createElement("div");m.className="more";m.textContent=`還有 ${mine.length-lim} 檔，點開全部`;m.onclick=()=>render(999);box.appendChild(m)}};
+      render(8)}
+    grid.appendChild(card)});
+  // ---- 輪動熱力表 ----
+  const bg=v=>v==null?"":`background:${v>0?`rgba(255,90,78,${Math.min(Math.abs(v)/8,.7)})`:`rgba(47,191,143,${Math.min(Math.abs(v)/8,.7)})`}`;
+  $("heat").innerHTML=`<table><tr><th>類股</th><th>1日</th><th>1週</th><th>1月</th><th>3月</th><th>法人5日</th><th>法人20日</th><th>成交比重</th><th>廣度</th></tr>`+
+    [...S.sectors].sort((a,b)=>(b.rel["20d"]??-99)-(a.rel["20d"]??-99)).map(x=>`<tr><td>${x.name}</td>${["1d","5d","20d","60d"].map(k=>`<td><span class="cell" style="${bg(x.rel[k])}">${s(x.rel[k])}</span></td>`).join("")}<td class="${cls(x.flow5)}">${x.flow5??"—"}</td><td class="${cls(x.flow20)}">${x.flow20??"—"}</td><td class="${cls(x.turnover.today-x.turnover.avg60)}">${x.turnover.today}% / ${x.turnover.avg60}%</td><td>${x.breadth??"—"}%</td></tr>`).join("")+"</table>";
+  // ---- ETF ----
+  const watch=await fetch("data/watch.json").then(r=>r.json()).catch(()=>["0050"]);
+  const names={"0050":"元大台灣50","006208":"富邦台50","00685L":"群益台灣加權正2","00981A":"主動統一台股增長","00982A":"主動群益科技創新","0056":"元大高股息","00878":"國泰永續高股息"};
+  const E=$("etf"),list=watch.filter(c=>live(c)).map(c=>[c,names[c]||c,live(c).chg]);const bench=list.length?list[0][2]:0,mx=Math.max(...list.map(e=>Math.abs(e[2])),.1);
+  if(!list.length)E.innerHTML='<p>盤中報價還沒進來，開盤後再看。</p>';
+  list.forEach(([c,n,v],i)=>{const d=v-bench,w=Math.abs(v)/mx*50;const el=document.createElement("div");el.className="bar"+(i===0?" bm":"");
+    el.innerHTML=`<span>${n}${held[c]?'<span class="tag">持</span>':''}<br><small style="font:11px var(--mono);color:var(--dim)">${c}${i?"　vs 0050 "+s(d):"　基準"}</small></span><span class="t"><i style="left:${v>=0?50:50-w}%;width:${w}%;background:var(${v>=0?"--up":"--dn"})"></i><i style="left:50%;width:1px;height:14px;top:-2px;background:#4a5760"></i></span><span class="v ${cls(v)}">${s(v)}</span>`;E.appendChild(el)});
+})();
+</script></body></html>
