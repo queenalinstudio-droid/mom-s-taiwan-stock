@@ -6,16 +6,30 @@ today = now().strftime("%Y%m%d")
 
 # ---------- 1. 公司基本資料：產業別 + 發行股數 ----------
 members = {}  # code -> {name, sector, shares, market}
+def pick(row, *keys):
+    for k in row:
+        if all(x in k for x in keys): return row[k]
+    return None
 for url, market in (("https://openapi.twse.com.tw/v1/opendata/t187ap03_L", "tse"),
-                    ("https://www.tpex.org.tw/openapi/v1/t187ap03_O", "otc")):
+                    ("https://www.tpex.org.tw/openapi/v1/t187ap03_O", "otc"),
+                    ("https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap03_O", "otc")):
     try:
-        for row in get_json(url):
-            code = row.get("公司代號"); sec = SECTORS.get(str(row.get("產業別", "")).zfill(2))
-            shares = num(row.get("已發行普通股數或TDR原股發行股數"))
-            if code and sec and shares:
-                members[code] = {"name": row.get("公司簡稱") or row.get("公司名稱"), "sector": sec, "shares": shares, "market": market}
+        rows = get_json(url)
+        if not isinstance(rows, list) or not rows: print("空回應", url); continue
+        print("欄位", url, list(rows[0].keys())[:12])
+        got = 0
+        for row in rows:
+            code = (pick(row, "公司代號") or pick(row, "代號") or "").strip()
+            ind = str(pick(row, "產業別") or "").strip().zfill(2)
+            shares = num(pick(row, "已發行普通股數") or pick(row, "發行股數") or pick(row, "股數"))
+            name = pick(row, "公司簡稱") or pick(row, "簡稱") or pick(row, "公司名稱")
+            sec = SECTORS.get(ind)
+            if code and sec and shares and code not in members:
+                members[code] = {"name": name, "sector": sec, "shares": shares, "market": market}; got += 1
+        print("基本資料", url, "取得", got, "檔")
     except Exception as e:
-        print("基本資料失敗", url, e)
+        print("基本資料失敗", url, repr(e))
+print("成員總數", len(members))
 
 # ---------- 2. 全市場收盤價 / 漲跌 ----------
 closes = {}
@@ -59,6 +73,7 @@ save("index_history.json", idx_hist)
 flow_hist = load("flow_history.json", {})
 try:
     t86 = get_json(f"https://www.twse.com.tw/rwd/zh/fund/T86?date={today}&selectType=ALLBUT0999&response=json")
+    print("T86 筆數", len(t86.get("data", [])), "欄位", t86.get("fields", [])[-3:])
     day = {}
     for r in t86.get("data", []):
         code = r[0].strip(); net = num(r[-1])  # 三大法人買賣超股數（最後一欄）
